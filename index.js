@@ -22,13 +22,14 @@ let createTodo = (todo) => {
     checkbox.type = "checkbox";
     checkbox.checked = todo.completed;
     checkbox.disabled = todo.completed;
-    li.append(checkbox);
+    li.prepend(checkbox);
     return li
 }
 
 let renderTodos = async () => {
     let todos = await getData("https://jsonplaceholder.typicode.com/todos");
-    //Om man vill hämta data från ett annat API;
+    //Om man vill hämta data från ett annat API-endpoint kan vi använda samma metod;
+
     // let posts = await getData("https://jsonplaceholder.typicode.com/posts");
     // // console.log(posts);
 
