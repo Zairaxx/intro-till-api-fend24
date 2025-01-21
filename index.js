@@ -1,8 +1,13 @@
 //Asynkron javascript
 
+
+//Hämta data med .then
+
  fetch('https://jsonplaceholder.typicode.com/todos')
  .then(response => response.json())
  .then(json => {
+
+    //Använd datat och skriv ut det i DOM:en
     json.forEach(todo => {
         let p = document.createElement("p");
         p.innerText = todo.title;
@@ -11,7 +16,7 @@
  })
 
 
- //Async/Await
+ //Async/Await - Kan användas istället för .then - Nyare/Enklare syntax!
 
 let getTodos = async () => {
     let response = await fetch('https://jsonplaceholder.typicode.com/todos');
@@ -19,7 +24,7 @@ let getTodos = async () => {
     return json
 }
 
-
+//Skapa en funktion som kör getTodos-funktionen och skriver ut datat i DOM:en!
 let renderPage = async () => {
     let todos = await getTodos();
     
@@ -31,22 +36,3 @@ let renderPage = async () => {
 }
 
 renderPage();
-
- //setTimeout
-
-// setTimeout(() => {
-//     console.log("Lägger på skinka, tomat och ananas");
-// }, 5000).then( () => {
-//     return setTimeout(() => {
-//         console.log("Sätta in pizzan i ugnen")
-//     }, 2000)
-// }).then( () => {
-//     return setTimeout(() => {
-//         console.log("Väntar på att den blir färdig")
-//     }, 5000)
-// }).then( () => {
-//     return setTimeout(() => {
-//     console.log("Äta pizza!")
-// }, 1000)})
-
-
