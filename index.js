@@ -1,38 +1,53 @@
-//Asynkron javascript
+let getData = async (url) => {
+    // try/catch
+    try {
+        let response = await fetch(url);
+        let json = await response.json();
+        return json
+    } catch(error){
+        let h2 = document.createElement("h2");
+        h2.innerText = "Oj, något gick fel! Testa igen senare eller kontakta webbutvecklaren som tabbat sig. Error meddelande: " + error;
+        document.body.append(h2);
+    }
 
-
-//Hämta data med .then
-
- fetch('https://jsonplaceholder.typicode.com/todos')
- .then(response => response.json())
- .then(json => {
-
-    //Använd datat och skriv ut det i DOM:en
-    json.forEach(todo => {
-        let p = document.createElement("p");
-        p.innerText = todo.title;
-        document.body.append(p);
-    })
- })
-
-
- //Async/Await - Kan användas istället för .then - Nyare/Enklare syntax!
-
-let getTodos = async () => {
-    let response = await fetch('https://jsonplaceholder.typicode.com/todos');
-    let json = await response.json();
-    return json
 }
 
-//Skapa en funktion som kör getTodos-funktionen och skriver ut datat i DOM:en!
-let renderPage = async () => {
-    let todos = await getTodos();
-    
-    todos.forEach(todo => {
-        let p = document.createElement("p");
-        p.innerText = todo.title;
-        document.body.append(p);
+let createTodo = (todo) => {
+    let li = document.createElement("li");
+    li.classList.add("todo-item");
+    li.innerText = `#${todo.id} - ${todo.title}`;
+
+    //Checkbox
+    let checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = todo.completed;
+    checkbox.disabled = todo.completed;
+    li.append(checkbox);
+    return li
+}
+
+let renderTodos = async () => {
+    let todos = await getData("https://jsonplaceholder.typicode.com/todos");
+    //Om man vill hämta data från ett annat API;
+    // let posts = await getData("https://jsonplaceholder.typicode.com/posts");
+    // // console.log(posts);
+
+
+    let currentId = 0;
+    let ul;
+    todos.forEach((todo) => {
+        //Om det är en ny user - Skapa en ny ul
+        if(todo.userId !== currentId) {
+            let h2 = document.createElement("h2");
+            h2.innerText = `User #${todo.userId} todo-list`
+            ul = document.createElement("ul");
+            document.body.append(h2,ul);
+            currentId = todo.userId;
+        }
+
+        let li = createTodo(todo);
+        ul.append(li);
     })
 }
 
-renderPage();
+renderTodos();
