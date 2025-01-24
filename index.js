@@ -1,3 +1,5 @@
+let getProfilesBtn = document.querySelector("#getProfiles");
+let getUserProfileBtn = document.querySelector("#getUserProfile")
 let getData = async (url) => {
     // try/catch
     try {
@@ -12,43 +14,55 @@ let getData = async (url) => {
 
 }
 
-let createTodo = (todo) => {
-    let li = document.createElement("li");
-    li.classList.add("todo-item");
-    li.innerText = `#${todo.id} - ${todo.title}`;
+let getProfiles = async () => {
+    let users = await getData("https://jsonplaceholder.typicode.com/users")
+    console.log(users);
 
-    //Checkbox
-    let checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.checked = todo.completed;
-    checkbox.disabled = todo.completed;
-    li.prepend(checkbox);
-    return li
-}
-
-let renderTodos = async () => {
-    let todos = await getData("https://jsonplaceholder.typicode.com/todos");
-    //Om man vill hämta data från ett annat API-endpoint kan vi använda samma metod;
-
-    // let posts = await getData("https://jsonplaceholder.typicode.com/posts");
-    // // console.log(posts);
-
-
-    let currentId = 0;
-    let ul;
-    todos.forEach((todo) => {
-        //Om det är en ny user - Skapa en ny ul
-        if(todo.userId !== currentId) {
-            let h2 = document.createElement("h2");
-            h2.innerText = `User #${todo.userId} todo-list`
-            ul = document.createElement("ul");
-            document.body.append(h2,ul);
-            currentId = todo.userId;
-        }
-
-        let li = createTodo(todo);
+    let ul = document.createElement("ul");
+    document.body.append(ul);
+    users.forEach(user => {
+        let li = document.createElement("li");
+        li.style.border = "2px solid black";
         ul.append(li);
+        
+        //de-structuring
+        let {name,phone,email,address,company} = user;
+        let {city,street} = address;
+        let {name:companyName, bs} = company
+
+        li.innerHTML = `
+        <p><strong>Name:</strong>${name}</p>
+        <p><strong>Phone:</strong>${phone}</p>
+        <p><strong>Email:</strong>${email}</p>
+        <p><strong>Address:</strong>${street}, ${city}</p>
+        <p><strong>Company:</strong>${companyName} - ${bs}</p>
+        `
+
     })
 }
 
-renderTodos();
+let getUserProfile = async () => {
+    let userId = document.querySelector("#userId").value;
+    let user = await getData(`https://jsonplaceholder.typicode.com/users/${userId}`)
+    
+
+    let profile = document.querySelector("#user-profile");
+
+    profile.style.border = "2px solid black";
+        
+    //de-structuring
+    let {name,phone,email,address,company} = user;
+    let {city,street} = address;
+    let {name:companyName, bs} = company
+
+    profile.innerHTML = `
+    <p><strong>Name:</strong>${name}</p>
+    <p><strong>Phone:</strong>${phone}</p>
+    <p><strong>Email:</strong>${email}</p>
+    <p><strong>Address:</strong>${street}, ${city}</p>
+    <p><strong>Company:</strong>${companyName} - ${bs}</p>
+    `
+}
+
+getProfilesBtn.addEventListener("click", getProfiles)
+getUserProfileBtn.addEventListener("click", getUserProfile);
